@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <meta name="theme-color" content="#05070d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FRIDAY" />
+    <title>FRIDAY</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="grid-bg" aria-hidden="true"></div>
+
+    <div id="share-preview" class="hidden">
+      <video id="share-video" muted autoplay playsinline></video>
+      <div class="share-bar">
+        <span>screen shared — ask your question</span>
+        <button id="share-stop" title="Stop sharing">✕</button>
+      </div>
+    </div>
+
+    <div id="app">
+      <header class="hud">
+        <div class="brand">
+          <span class="core" id="core"></span>
+          <div class="brand-text">
+            <h1>FRIDAY</h1>
+            <p id="subtitle">connecting…</p>
+          </div>
+        </div>
+        <div class="head-actions">
+          <button id="btn-speak" class="chip on" title="Speak replies out loud" aria-pressed="true" aria-label="Voice on or off">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path d="M16.5 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+            <span class="chip-label">Voice</span>
+          </button>
+          <button id="btn-web" class="chip on" title="Web search enabled" aria-pressed="true" aria-label="Web search on or off">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span class="chip-label">Web</span>
+          </button>
+          <button id="btn-share" class="chip" title="Share your screen so she can see the problem" aria-label="Share screen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" /><path d="M9 20h6M12 16v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+            <span class="chip-label">Screen</span>
+          </button>
+          <button id="btn-tools" class="chip" title="Everything she can do" aria-label="Skills">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            <span class="chip-label">Skills</span>
+          </button>
+          <button id="btn-settings" class="chip" title="Settings" aria-label="Settings">⚙</button>
+        </div>
+      </header>
+
+      <div id="ears-bar" class="ears-bar hidden">
+        <span>Mic is off. Let her keep her ears open?</span>
+        <button id="ears-enable" class="btn primary small">Enable always-on</button>
+      </div>
+
+      <main id="chat" class="chat" aria-live="polite"></main>
+
+      <div id="thinking" class="thinking hidden" aria-hidden="true">
+        <span></span><span></span><span></span>
+        <em id="thinking-text">soch rahi hoon…</em>
+      </div>
+
+      <div id="listen-hint" class="listen-hint hidden" aria-hidden="true">
+        <span class="wave"><i></i><i></i><i></i><i></i></span>
+        <em>Sun rahi hoon — bas boliye</em>
+      </div>
+
+      <button id="btn-stop-talk" class="stop-talk hidden" title="Stop her voice">
+        <span class="stop-dot" aria-hidden="true"></span> Stop talking
+      </button>
+
+      <footer class="composer">
+        <div class="composer-inner">
+          <button id="btn-mic" class="mic" title="Talk to FRIDAY" aria-label="Start voice input">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </button>
+          <div class="input-wrap">
+            <textarea id="input" rows="1" placeholder="Bolo ya likho… (Hindi / English)" autocomplete="off" spellcheck="false"></textarea>
+            <button id="btn-lang" class="lang-tag" title="Mic language">auto</button>
+          </div>
+          <button id="btn-send" class="send" title="Send" aria-label="Send message">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 8 6 8-16-8z" /></svg>
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <!-- approval sheet -->
+    <div id="approval" class="sheet hidden" role="dialog" aria-modal="true">
+      <div class="sheet-card warn">
+        <div class="sheet-head">
+          <span class="badge">permission</span>
+          <h2 id="approval-title">Run tool?</h2>
+        </div>
+        <p id="approval-desc" class="sheet-desc"></p>
+        <pre id="approval-preview" class="preview"></pre>
+        <div class="sheet-actions">
+          <button id="approve-no" class="btn ghost">Nahi</button>
+          <button id="approve-always" class="btn subtle">Hamesha allow</button>
+          <button id="approve-yes" class="btn primary">Haan, karo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- settings drawer -->
+    <aside id="settings" class="drawer hidden" role="dialog" aria-modal="true">
+      <div class="drawer-head">
+        <h2>Settings</h2>
+        <button class="close" data-close="settings">✕</button>
+      </div>
+      <div class="drawer-body">
+        <p class="fineprint" style="margin:0">Everything here is free and stays on this laptop. Change what you like, then press <strong>Save</strong> once at the bottom.</p>
+        <h3 class="group-title">You</h3>
+        <label class="field">
+          <span>What should she call you?</span>
+          <input id="set-name" type="text" placeholder="boss" />
+        </label>
+
+        <h3 class="group-title">Her brain</h3>
+        <label class="field">
+          <span>Brain model (Ollama)</span>
+          <input id="set-model" type="text" placeholder="qwen2.5:3b-instruct" list="model-list" autocomplete="off" />
+          <datalist id="model-list"></datalist>
+          <small id="brain-note">Local model. Bigger = smarter but slower. Installed ones are suggested.</small>
+        </label>
+
+        <div class="field">
+          <span>Big brain — ChatGPT-level knowledge <small>(optional, free tier)</small></span>
+          <select id="set-cloud-provider">
+            <option value="gemini">Google Gemini — free tier, no card</option>
+            <option value="groq">Groq — free tier, very fast</option>
+            <option value="openrouter">OpenRouter — free models</option>
+            <option value="openai">OpenAI — paid</option>
+            <option value="custom">Custom / another PC</option>
+          </select>
+          <input id="set-cloud-key" type="password" placeholder="paste your API key" autocomplete="off" spellcheck="false" />
+          <input id="set-cloud-model" type="text" placeholder="model name" list="cloud-model-list" autocomplete="off" spellcheck="false" />
+          <datalist id="cloud-model-list"></datalist>
+          <input id="set-cloud-base" type="text" placeholder="custom base URL (only for Custom)" autocomplete="off" spellcheck="false" />
+          <label class="field toggle"><span>Use the big brain</span><input id="set-cloud-on" type="checkbox" /></label>
+          <button id="btn-cloud-test" class="btn small" type="button">Connect &amp; test</button>
+          <small id="cloud-note">No key yet — she thinks with the local model. A free key from Gemini gives her ChatGPT-level knowledge.</small>
+          <small><a id="cloud-key-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">Get a free key</a> · only your chat text and the tool results she needs are sent, never your files.</small>
+        </div>
+
+        <h3 class="group-title">Her voice</h3>
+        <label class="field">
+          <span>Voice engine</span>
+          <select id="set-voice">
+            <option value="auto">Auto (best available)</option>
+            <option value="piper">Piper — offline neural (fastest)</option>
+            <option value="google">Google — free online</option>
+            <option value="sapi">Windows built-in</option>
+            <option value="browser">Phone / browser voice</option>
+          </select>
+          <small id="voice-note"></small>
+        </label>
+
+        <label class="field">
+          <span>Voice (pick a specific voice)</span>
+          <select id="set-voice-id">
+            <option value="">Auto / default</option>
+          </select>
+          <small>Choose a female voice if available for a more natural sound.</small>
+          <button id="btn-voice-test" class="btn small" type="button">Test voice</button>
+        </label>
+
+        <label class="field toggle">
+          <span>Speak replies out loud</span>
+          <input id="set-speak" type="checkbox" />
+        </label>
+
+        <h3 class="group-title">Listening</h3>
+        <label class="field">
+          <span>Listening</span>
+          <select id="set-listen">
+            <option value="wake">Wake word only — say &ldquo;FRIDAY&rdquo; first</option>
+            <option value="always">Always listening — she hears everything you say</option>
+            <option value="off">Off — press the mic button</option>
+          </select>
+          <small id="listen-note">Keeps listening in the background, no button presses. Uses your browser's speech recognition and needs internet.</small>
+        </label>
+
+        <h3 class="group-title">App</h3>
+        <label class="field toggle">
+          <span>Start with Windows</span>
+          <input id="set-autostart" type="checkbox" />
+          <small>Opens her app window automatically when you log in.</small>
+        </label>
+
+        <label class="field toggle">
+          <span>Let her touch the whole disk</span>
+          <input id="set-allpaths" type="checkbox" />
+          <small>Off is safer: she stays inside your home folder.</small>
+        </label>
+
+        <div class="field">
+          <span>Allowed folders</span>
+          <textarea id="set-roots" rows="3" spellcheck="false"></textarea>
+        </div>
+
+        <div class="row">
+          <button id="settings-save" class="btn primary wide">Save</button>
+        </div>
+        <div class="row">
+          <button id="clear-history" class="btn ghost wide">Clear chat history</button>
+        </div>
+        <div class="row">
+          <button id="quit-app" class="btn ghost wide">Quit FRIDAY</button>
+        </div>
+        <p class="fineprint">Everything runs on this PC. No subscription, no cloud account. Only free voice, web search and Hindi translation lookups leave your machine.</p>
+      </div>
+    </aside>
+
+    <!-- skills drawer -->
+    <aside id="tools" class="drawer hidden" role="dialog" aria-modal="true">
+      <div class="drawer-head">
+        <h2>Skills</h2>
+        <button class="close" data-close="tools">✕</button>
+      </div>
+      <div class="drawer-body" id="tools-body"></div>
+    </aside>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
